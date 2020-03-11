@@ -58,7 +58,8 @@ wss.on("connection", (ws, req) => {
     wss.clients.forEach(client => {
       console.log(client.room);
       if (client.readyState === WebSocket.OPEN && client.room === channel) {
-        client.send(`Connected clients -> ${connectedClients[ws.room]}`);
+        const msg = {connected_clients: connectedClients[ws.room]}
+        client.send(JSON.stringify(msg));
       }
     });
   };
