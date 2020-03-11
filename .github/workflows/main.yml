@@ -11,7 +11,8 @@ jobs:
       with:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
-        key: ${{ secrets.SERVER_SSH_KEY }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.PORT }}
         script: |
           cd /home/ubuntu/myApps/Keymote-server
           git pull
