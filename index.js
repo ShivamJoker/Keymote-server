@@ -37,8 +37,7 @@ const removeClient = id => {
 
 wss.on("connection", (ws, req) => {
   ws.isAlive = true;
-  ws.on('pong', () => ws.isAlive = true);
-
+  ws.on("pong", () => (ws.isAlive = true));
 
   let channel;
   //if parsing channel fails then terminate the so
@@ -54,13 +53,17 @@ wss.on("connection", (ws, req) => {
   console.log("client connected to -> ", channel);
   console.log("no of clients in this room ", connectedClients[channel]);
 
-  //we will send no. of clients connected to room everytime anyone connects to room
-  wss.clients.forEach(client => {
-    console.log(client.room);
-    if (client.readyState === WebSocket.OPEN && client.room === channel) {
-      client.send(`Connected clients -> ${connectedClients[ws.room]}`);
-    }
-  });
+  //we will send no. of clients connected to room everytime anyone connects to room\
+  const sendConnectedClientsNo = () => {
+    wss.clients.forEach(client => {
+      console.log(client.room);
+      if (client.readyState === WebSocket.OPEN && client.room === channel) {
+        client.send(`Connected clients -> ${connectedClients[ws.room]}`);
+      }
+    });
+  };
+
+  sendConnectedClientsNo();
 
   ws.on("message", message => {
     console.log("message: ", message);
@@ -82,16 +85,17 @@ wss.on("connection", (ws, req) => {
   ws.on("close", e => {
     removeClient(ws.room);
     console.log("disconnected");
+    sendConnectedClientsNo();
   });
 });
 
 // keep the server alive
 const interval = setInterval(() => {
-  wss.clients.forEach((ws) => {
+  wss.clients.forEach(ws => {
     if (ws.isAlive === false) return ws.terminate();
 
     ws.isAlive = false;
-    ws.ping('', false, true);
+    ws.ping("", false, true);
   });
 }, 30000);
 
