@@ -17,7 +17,7 @@ jobs:
           cd /home/ubuntu/myApps/Keymote-server
           git pull
           npm install
-          
+          pm2 list
 
 
 name: Node CI
